@@ -6,7 +6,7 @@
   "homepage": "http://haruhichan.com/forum/showthread.php?24909-Firefox-ExHentai-Easy-v2-Get-past-sad-panda!",
   "author": "Haruhichan (http://haruhichan.com)",
   "license": "MPL 2.0",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "icon": "data/img/icon.png",
   "permissions": {
     "private-browsing": true
