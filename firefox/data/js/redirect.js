@@ -8,7 +8,7 @@
 
 		menu.html(menu.html() +
                 	'<img src="http://st.exhentai.net/img/mr.gif" alt="">' +
-                	'<a id="haruhichanLogout" href="#"> Logout</a>');
+                	' <a id="haruhichanLogout" href="#">Logout</a>');
 
 		$('#haruhichanLogout').click(function() {
     			deleteLocalCookie('ipb_session_id');
