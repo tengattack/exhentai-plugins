@@ -40,7 +40,7 @@ exports.main = function() {
                     		content: {
                         		'referer':'https://forums.e-hentai.org/index.php',
                         		'UserName':payload.username,
-                       	 	'PassWord':payload.password,
+                       	 	        'PassWord':payload.password,
                         		'CookieDate':'1'
                     		},
                     		onComplete: function(r) {

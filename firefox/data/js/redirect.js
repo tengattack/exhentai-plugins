@@ -1,14 +1,15 @@
 //<3 s0beit	
-	var exSrc = $("img[src='" + document.URL + "']"); // This is not right!
+	var exSrc = $("img[src='" + document.URL + "']");
 	var menu = $('#nb');
 
 	if(exSrc.length) {
 		window.location.href = 'http://exhentai.org/login';
 	} else if(menu.length) {
 
-		menu.html(menu.html() +
-                	'<img src="http://st.exhentai.net/img/mr.gif" alt="">' +
-                	' <a id="haruhichanLogout" href="#">Logout</a>');
+		menu.append($("<img>", { src: "http://st.exhentai.net/img/mr.gif", alt: "" }));
+		menu.append(" ");
+		menu.append($("<a>", { id: "haruhichanLogout", href: "#" }).text("Logout"));
+
 
 		$('#haruhichanLogout').click(function() {
     			deleteLocalCookie('ipb_session_id');

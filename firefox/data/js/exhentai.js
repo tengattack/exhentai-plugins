@@ -1,21 +1,26 @@
 // exhentai.js - puromonogatari's module
 // author: puromonogatari & seidweise at haruhichan.com 
 
+function sanatizeS(s){
+    //quick and dirty
+    //jquery .text converts everything to html entities
+    var a = $("<div>").text(s);
+    return a.text();
+}
+
 function saveData() {
     if($('#saveLogin').is(':checked')) {
-		self.port.emit('saveUsername', $('#usernameInput').val());
+	self.port.emit('saveUsername', $('#usernameInput').val());
         self.port.emit('savePassword', $('#passwordInput').val());
-	} else {
-	    self.port.emit('deleteLogin', null);
-	}
+    } else {
+        self.port.emit('deleteLogin', null);
+    }
 }
 
 function setLocalCookie(name, value) {
     var exp = new Date();
-    
-    exp.setMonth(exp.getMonth() + 6);
-    
-    document.cookie = name + '=' + value + ';expires=' + exp.toGMTString();
+    exp.setMonth(exp.getMonth() + 6);    
+    document.cookie = sanatizeS(name) + '=' + sanatizeS(value) + ';expires=' + exp.toGMTString();
 }
 
 function deleteLocalCookie(name) {
@@ -24,13 +29,13 @@ function deleteLocalCookie(name) {
 
 function loginToEhResult(r) {
     if(r == null || r.text == null) {
-        displayError('An unknown error occured!');
+        displayError('Unknown error!');
         resetLoginForm();
         return;
     }
     
     if(r.text.indexOf('Username or password incorrect') != -1 || r.text.indexOf('we could not find a member using those log in details') != -1) {
-        displayError('Login Failure!');
+        displayError('Incorrect Login!');
         resetLoginForm();
         return;
     }
@@ -78,16 +83,16 @@ function loginToEh() {
     saveData();
     
     self.port.on('loginToEHResult', loginToEhResult);
-    self.port.emit('loginToEH', {username:$('#usernameInput').val(), password:$('#passwordInput').val()});
+    self.port.emit('loginToEH', {username:sanatizeS( $('#usernameInput').val() ), password: sanatizeS( $('#passwordInput').val() )});
 }
 
 function displayError(e) {
-        $('#errorMsg').css('visibility', 'visible').html('<b>Error</b>: ' + e).hide().fadeIn('slow');
+        $('#errorMsg').css('visibility', 'visible').text('Error: ' + e).hide().fadeIn('slow');
 }
 
 function disableLoginForm(msg) {
         $('#loginButton').addClass('disabled');
-        $('#loginButton').html(msg);
+        $('#loginButton').text(msg);
         $('#usernameInput').prop('disabled', true);
         $('#passwordInput').prop('disabled', true);
         $('#saveLogin').prop('disabled', true);
@@ -95,7 +100,7 @@ function disableLoginForm(msg) {
 
 function resetLoginForm() {
         $('#loginButton').removeClass('disabled');
-        $('#loginButton').html('Sign in');
+        $('#loginButton').text('Sign in');
         $('#usernameInput').prop('disabled', false);
         $('#passwordInput').prop('disabled', false);
         $('#saveLogin').prop('disabled', false);
@@ -112,27 +117,42 @@ $(function() {
         
     // Append main page content
     var b = $('body');
-    b.html(
-		'<div align="center">' + 
-		'<img src="http://exhentai.org" alt="Sad Panda is Sad"/>' +
-                '<div id="errorMsg" class="alert alert-danger" style="visibility:hidden; text-align: left;"><b>Error</b>: Hello!</div>' + 
-		'</div>' + 
-		'<div class="container">' +
-			'<div class="form-signin">' + 
-				'<input id="usernameInput" type="text" class="form-control" placeholder="Username" required autofocus>' + 
-				'<input id="passwordInput" type="password" class="form-control" placeholder="Password" required>' + 
-				'<label class="checkbox">' + 
-					'<input id="saveLogin" type="checkbox" value="remember-me"> Remember me' + 
-				'</label>' + 
-				'<button id="loginButton" class="btn btn-lg btn-success btn-block">Sign in</button>' + 
-				'<div align="center" style="margin-top: 12px; font-size: 12px;">' + 
-					'<a href="http://haruhichan.com/" target="_blank">Presented by Haruhichan</a><br />' +
-					'<a href="http://haruhichan.com/forum/showthread.php?24909-Firefox-ExHentai-Easy-v2-Get-past-sad-panda!" target="_blank">Support - Contact - Donate</a><br />' +
-					'<a href="bitcoin:15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n">Bitcoin</a>: 15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n<br />' + 
-					'<a href="litecoin:LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa">Litecoin</a>: LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa' + 
-				'</div>' + 
-			'</div>' + 
-		'</div>');
+
+    b.html(''); //clear the page's contents
+
+    //safe and annoying jquery html templating
+    b.append(
+        $("<div>", { align: "center" })
+            .append($("<img>", { src: "http://exhentai.org", alt: "Sad Panda is Sad" }))
+	    .append($("<div>", { id: "errorMsg", class: "alert alert-danger", style: "visibility:hidden; text-align: left;" }))
+    );
+
+    b.append(
+        $("<div>", { class: "container" })
+            .append(
+                $("<div>", { class: "form-signin" })
+                    .append( $("<input>", { id: "usernameInput", type: "text", class: "form-control", placeholder: "Username", required: "", autofocus: ""}) )
+                    .append( $("<input>", { id: "passwordInput", type: "password", class: "form-control", placeholder: "Password", required: ""}) )
+                    .append(
+                        $("<label>", { class: "checkbox" }) 
+                            .append( $("<input>", { id: "saveLogin", type: "checkbox", value: "remember-me" }).val(" Remember me") )
+                            .append(" Remember me")
+                    )
+                    .append( $("<button>", { id: "loginButton", class: "btn btn-lg btn-success btn-block" }).text("Sign In") )
+                    .append(
+                        $("<div>", { align: "center", style: "margin-top: 12px; font-size: 12px;" })
+                            .append($("<a>", { href: "http://haruhichan.com/", target: "_blank" }).text("Presented by Haruhichan"))
+                            .append($("<br>"))
+                            .append($("<a>", { href: "http://haruhichan.com/forum/showthread.php?24909-Firefox-ExHentai-Easy-v2-Get-past-sad-panda!", target: "_blank" }).text("Support - Contact - Donate"))
+                            .append($("<br>"))
+                            .append($("<a>", { href: "bitcoin:15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n" }).text("Bitcoin"))
+                            .append(": 15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n")
+                            .append($("<br>"))
+                            .append($("<a>", { href: "litecoin:LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa" }).text("Litecoin"))
+                            .append(": LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa")
+                    )
+            ) 
+    );
     
     $('#loginButton').bind('click', loginToEh);
     
