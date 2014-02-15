@@ -2,16 +2,15 @@
 // author: puromonogatari & seidweise at haruhichan.com 
 
 function sanatizeS(s){
-    //quick and dirty
-    //jquery .text converts everything to html entities
+    //quick and dirty - jquery .text() converts everything to html entities
     var a = $("<div>").text(s);
     return a.text();
 }
 
 function saveData() {
     if($('#saveLogin').is(':checked')) {
-	self.port.emit('saveUsername', $('#usernameInput').val());
-        self.port.emit('savePassword', $('#passwordInput').val());
+	self.port.emit('saveUsername', sanatizeS( $('#usernameInput').val() ));
+        self.port.emit('savePassword', sanatizeS( $('#passwordInput').val() ));
     } else {
         self.port.emit('deleteLogin', null);
     }
@@ -24,7 +23,7 @@ function setLocalCookie(name, value) {
 }
 
 function deleteLocalCookie(name) {
-    document.cookie = name + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+    document.cookie = sanatizeS(name) + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
 }
 
 function loginToEhResult(r) {
@@ -118,9 +117,9 @@ $(function() {
     // Append main page content
     var b = $('body');
 
-    b.html(''); //clear the page's contents
+    b.html(''); //clear the page's 404 msg or other contents
 
-    //safe and annoying jquery html templating
+    //safe html and annoying jquery templating
     b.append(
         $("<div>", { align: "center" })
             .append($("<img>", { src: "http://exhentai.org", alt: "Sad Panda is Sad" }))
@@ -148,8 +147,11 @@ $(function() {
                             .append($("<a>", { href: "bitcoin:15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n" }).text("Bitcoin"))
                             .append(": 15kJLmbnU4jyY8TcJ4jJ6uBKaHv3PqPm5n")
                             .append($("<br>"))
-                            .append($("<a>", { href: "litecoin:LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa" }).text("Litecoin"))
-                            .append(": LLmTuB6xzrS95Z4XhJ6y3UmP8fRsG2tpGa")
+                            .append($("<a>", { href: "dogecoin:D8LBPmry9QeEpFAgJhoQcyfD4jEW1CtBVi" }).text("Dogecoin"))
+                            .append(": D8LBPmry9QeEpFAgJhoQcyfD4jEW1CtBVi")
+                            .append($("<br>"))
+                            .append($("<a>", { href: "litecoin:LLmgH3dduf4UAJy1xovv7Zmx3yz4qSqcuh" }).text("Litecoin"))
+                            .append(": LLmgH3dduf4UAJy1xovv7Zmx3yz4qSqcuh")
                     )
             ) 
     );
