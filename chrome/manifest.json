@@ -1,5 +1,6 @@
 {
 	"name": "Sad Panda",
+	"short_name": "Sad Panda",
 	"version": "2.1",
 	"manifest_version": 2,
 	"description": "Sad Panda",
