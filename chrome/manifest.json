@@ -35,7 +35,9 @@
 		"cookies",
 		"tabs",
 		"notifications",
-		"<all_urls>"
+		"*://e-hentai.org/*",
+		"*://*.e-hentai.org/*",
+		"*://exhentai.org/*"
 	],
 	"offline_enabled": false
 }
