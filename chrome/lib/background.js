@@ -23,6 +23,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		chrome.cookies.remove({name:"ipb_member_id", url:"http://exhentai.org/"}, function(){});
 		chrome.cookies.remove({name:"ipb_pass_hash", url:"http://exhentai.org/"}, function(){});
 		chrome.cookies.remove({name:"ipb_session_id", url:"http://exhentai.org/"}, function(){});
+		chrome.cookies.remove({name:"ipb_anonlogin", url:"http://e-hentai.org/"}, function(){});
+		chrome.cookies.remove({name:"ipb_member_id", url:"http://e-hentai.org/"}, function(){});
+		chrome.cookies.remove({name:"ipb_pass_hash", url:"http://e-hentai.org/"}, function(){});
+		chrome.cookies.remove({name:"ipb_session_id", url:"http://e-hentai.org/"}, function(){});		
 		sendResponse();
 	} else if(request == 'reload') {
 		chrome.tabs.getSelected(null, function(tab) {
