@@ -36,6 +36,5 @@
 		"notifications",
 		"<all_urls>"
 	],
-	"update_url": "http://haruhichan.com/projects/ex/update.xml",
 	"offline_enabled": false
 }
