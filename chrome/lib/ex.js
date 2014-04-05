@@ -65,8 +65,8 @@ function onReturnMessage(status) {
 function handleLoginClick() {
 	disableLoginForm('Logging in...');
 
-	var username = $('#usernameInput').val();
-	var password = $('#passwordInput').val();
+	var username = encodeURIComponent($('#usernameInput').val());
+	var password = encodeURIComponent($('#passwordInput').val());
 	
 	if(username.length == 0 || password.length == 0) {
 		displayError('Username and Password required!');
