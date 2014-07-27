@@ -62,6 +62,37 @@ function onReturnMessage(status) {
 	}
 }
 
+chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse) {
+	  //from the extension
+	  if (request.action == "login") {
+	    onLoginResponse(request.data);
+	  }
+});
+
+function onLoginResponse(x) {
+	if (x) {
+		if (x === true) {
+			//already logged in
+			chrome.runtime.sendMessage('cookieDataSet', onReturnMessage);
+		} else if (x.indexOf('Username or password incorrect') != -1) {
+			displayError('Login failure!');
+			resetLoginForm();
+		} else if (x.indexOf('You must already have registered for an account before you can log in') != -1) {
+			displayError('No account exists with name "' + username + '"');
+			resetLoginForm();
+		} else if (x.indexOf('You are now logged in as:') != -1) {
+			chrome.runtime.sendMessage('cookieDataSet', onReturnMessage);
+		} else {
+			displayError('Error parsing login result page!');
+			resetLoginForm();
+		}
+	} else {
+		displayError('Error sending POST request to forums.e-hentai.org!');
+		resetLoginForm();
+	}
+}
+
 function handleLoginClick() {
 	disableLoginForm('Logging in...');
 
@@ -72,24 +103,12 @@ function handleLoginClick() {
 		displayError('Username and Password required!');
 		resetLoginForm();
 	} else {
-		$.post('https://forums.e-hentai.org/index.php?act=Login&CODE=01', 
-			'referer=https://forums.e-hentai.org/index.php&UserName=' + username + '&PassWord=' + password + '&CookieDate=1', function(x) {
-			if(x.indexOf('Username or password incorrect') != -1) {
-				displayError('Login failure!');
-				resetLoginForm();
-			} else if(x.indexOf('You must already have registered for an account before you can log in') != -1) {
-				displayError('No account exists with name "' + username + '"');
-				resetLoginForm();
-			} else if(x.indexOf('You are now logged in as:') != -1) {
-				chrome.runtime.sendMessage('cookieDataSet', onReturnMessage);
-			} else {
-				displayError('Error parsing login result page!');
-				resetLoginForm();
-			}
-		}).error(function() {
-			displayError('Error sending POST request to forums.e-hentai.org!');
-			resetLoginForm();
-		});
+		var req = {
+			action: 'login',
+			username: username,
+			password: password
+		};
+		chrome.runtime.sendMessage(req, onLoginResponse);
 	}
 }
 
